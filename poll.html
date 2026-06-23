@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Live Football Vote</title>
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      margin-top: 50px;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    .box {
+      margin-top: 20px;
+      font-size: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<h2>⚽ Who is the best football player?</h2>
+
+<button onclick="vote('messi')">🔵 Messi</button>
+<button onclick="vote('ronaldo')">🔴 Ronaldo</button>
+
+<div class="box">
+  <p>🔵 Messi Votes: <span id="messiCount">0</span></p>
+  <p>🔴 Ronaldo Votes: <span id="ronaldoCount">0</span></p>
+</div>
+
+<script>
+  // Load saved votes
+  let messi = localStorage.getItem("messi") || 0;
+  let ronaldo = localStorage.getItem("ronaldo") || 0;
+
+  function update() {
+    document.getElementById("messiCount").innerText = messi;
+    document.getElementById("ronaldoCount").innerText = ronaldo;
+  }
+
+  function vote(player) {
+    if (player === "messi") {
+      messi++;
+      localStorage.setItem("messi", messi);
+    } else {
+      ronaldo++;
+      localStorage.setItem("ronaldo", ronaldo);
+    }
+    update();
+  }
+
+  update();
+</script>
+
+</body>
+</html>
+[9:13 am, 23/06/2026] Arun✓: <!DOCTYPE html>
+<html>
+<head>
+  <title>Live Football Poll</title>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
+</head>
+<body style="text-align:center;font-family:Arial">
+
+<h2>⚽ Messi vs Ronaldo Live Vote</h2>
+
+<button onclick="vote('messi')">🔵 Messi</button>
+<button onclick="vote('ronaldo')">🔴 Ronaldo</button>
+
+<h3>Live Results</h3>
+<p>Messi: <span id="messi">0</span></p>
+<p>Ronaldo: <span id="ronaldo">0</span></p>
+
+<script>
+  // 🔥 Your Firebase config (replace with yours)
+  const firebaseConfig = {
+    apiKey: "YOUR_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  const ref = db.collection("votes").doc("poll");
+
+  // create doc if not exists
+  ref.get().then(doc => {
+    if (!doc.exists) {
+      ref.set({messi: 0, ronaldo: 0});
+    }
+  });
+
+  // LIVE listener
+  ref.onSnapshot(doc => {
+    let data = doc.data();
+    document.getElementById("messi").innerText = data.messi;
+    document.getElementById("ronaldo").innerText = data.ronaldo;
+  });
+
+  function vote(player) {
+    ref.get().then(doc => {
+      let data = doc.data();
+      if (player === "messi") {
+        ref.update({messi: data.messi + 1});
+      } else {
+        ref.update({ronaldo: data.ronaldo + 1});
+      }
+    });
+  }
+</script>
+
+</body>
+</html>
+[9:13 am, 23/06/2026] Arun✓: 
